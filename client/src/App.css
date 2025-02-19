@@ -1,0 +1,88 @@
+.App {
+  text-align: center;
+}
+
+.App-header {
+  background-color: #282c34;
+  min-height: 10vh;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  font-size: calc(10px + 2vmin);
+  color: white;
+}
+
+.gallery {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr); /* 3 imágenes por fila */
+  gap: 20px;
+  padding: 20px;
+}
+
+.image-card {
+  background-color: #f0f0f0;
+  padding: 10px;
+  border-radius: 8px;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+}
+
+.image {
+  width: 100%;
+  height: 200px;
+  object-fit: cover;
+  border-radius: 8px;
+}
+
+.image-info {
+  text-align: left;
+  padding: 10px;
+}
+
+.image-info h2 {
+  font-size: 1.2em;
+  margin: 10px 0;
+}
+
+.image-info p {
+  margin: 5px 0;
+}
+
+.modal {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background-color: rgba(0, 0, 0, 0.8);
+  z-index: 1000;
+}
+
+.modal-content {
+  background-color: white;
+  padding: 20px;
+  border-radius: 10px;
+  text-align: center;
+  max-width: 600px;
+  width: 90%;
+  height: 85vh; /* Establece la altura del modal al 80% de la altura de la ventana */
+  overflow-y: auto; /* Permite el scroll vertical si el contenido excede la altura del modal */
+}
+
+.modal-image {
+  width: 100%;
+  height: auto; /* Mantiene la proporción de la imagen */
+  max-height: 70vh; /* Limita la altura de la imagen al 70% de la altura de la ventana */
+  border-radius: 10px;
+}
+
+.close {
+  cursor: pointer;
+  position: absolute;
+  top: 10px;
+  right: 15px;
+  font-size: 25px;
+}
