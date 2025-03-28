@@ -2,10 +2,12 @@
   "name": "serverless_client",
   "version": "0.1.0",
   "private": true,
+  "homepage": "https://josgard94.github.io/nasa-react-gallery",
   "dependencies": {
     "@testing-library/jest-dom": "^6.5.0",
     "@testing-library/react": "^16.0.1",
     "@testing-library/user-event": "^14.5.2",
+    "gh-pages": "^6.3.0",
     "react": "^18.3.1",
     "react-dom": "^18.3.1",
     "react-scripts": "^5.0.1",
@@ -17,7 +19,10 @@
     "build": "react-scripts build",
     "test": "react-scripts test",
     "eject": "react-scripts eject",
-    "deploy": "python ./scripts/deploy.py"
+    "deploy_serverless": "python ./scripts/deploy.py",
+    "predeploy": "npm run build",
+    "deploy": "gh-pages -d build"
+
   },
   "eslintConfig": {
     "extends": [
