@@ -1,12 +1,12 @@
 import React, { useState, useEffect } from 'react';
 import './App.css';
-import { ClipLoader } from 'react-spinners';
+import { HashLoader } from 'react-spinners';
 
 function App() {
   const [images, setImages] = useState([]);
   const [selectedImage, setSelectedImage] = useState(null);
   const [isModalOpen, setIsModalOpen] = useState(false);
-  const [loading, setLoading] = useState(true); // NUEVO estado de carga
+  const [loading, setLoading] = useState(true); 
 
   const path = process.env.REACT_APP_ROOT_API;
 
@@ -19,7 +19,7 @@ function App() {
         console.log('data', data);
       })
       .catch(error => console.error('Error fetching images from NASA API:', error))
-      .finally(() => setLoading(false)); // Finaliza la carga
+      .finally(() => setLoading(false)); 
   }, []);
 
   const openModal = (image) => {
@@ -32,7 +32,7 @@ function App() {
     setSelectedImage(null);
   };
 
-  // 👉 Mostrar spinner si está cargando
+
   if (loading) {
     return (
       <div style={{
@@ -45,7 +45,7 @@ function App() {
         color: '#fff',
         flexDirection: 'column',
       }}>
-        <ClipLoader size={60} color="#ffffff" />
+        <HashLoader size={60} color="#ffffff" />
         <p style={{ marginTop: '1rem' }}>Loading cosmic images...</p>
       </div>
     );
