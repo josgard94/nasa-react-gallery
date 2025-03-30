@@ -8,6 +8,10 @@ function App() {
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [loading, setLoading] = useState(true); 
 
+  const [darkMode, setDarkMode] = useState(() => {
+    return localStorage.getItem("darkMode") === "true";
+  });
+
   const path = process.env.REACT_APP_ROOT_API;
 
   useEffect(() => {
@@ -21,6 +25,11 @@ function App() {
       .catch(error => console.error('Error fetching images from NASA API:', error))
       .finally(() => setLoading(false)); 
   }, []);
+
+  useEffect(() => {
+    document.body.classList.toggle("dark-mode", darkMode);
+    localStorage.setItem("darkMode", darkMode);
+  }, [darkMode]);
 
   const openModal = (image) => {
     setSelectedImage(image);
@@ -51,11 +60,20 @@ function App() {
     );
   }
 
+  const toggleTheme = () => {
+    setDarkMode(prev => !prev);
+  };
+
+
   return (
     <div className="App">
       <header className="App-header">
-        <h1>Cosmic Gallery</h1>
+        <h1 className="logo">🚀 Cosmic Gallery</h1>
+        <button className="theme-toggle" onClick={toggleTheme}>
+          {darkMode ? "☀️ Light Mode" : "🌙 Dark Mode"}
+        </button>
       </header>
+
       
       <div className="gallery">
         {images.map((image, index) => (
