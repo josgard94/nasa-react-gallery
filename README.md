@@ -28,9 +28,11 @@ See it in action:
 Take a look at the clean and responsive user interface built with React:
 
 <p align="center">
-  <img src="./screenshots/ui_screenshot1.png" alt="UI Screenshot 1" width="90%" />
+  <img src="./screenshots/ui_screenshot4.png" alt="UI Screenshot 2" width="90%" />
   <br/><br/>
-  <img src="./screenshots/ui_screenshot2.png" alt="UI Screenshot 2" width="90%" />
+  <img src="./screenshots/ui_screenshot3.png" alt="UI Screenshot 2" width="90%" />
+  <br/><br/>
+  <img src="./screenshots/ui_screenshot5.png" alt="UI Screenshot 2" width="90%" />
 </p>
 
 ---
