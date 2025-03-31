@@ -78,7 +78,7 @@ function App() {
       <div className="gallery">
         {images.map((image, index) => (
           <div key={index} className="image-card" onClick={() => openModal(image)}>
-            <img src={image.url} alt={image.title} className="image" />
+            <img src={image.url} alt={image.title} className="image" loading="lazy" />
             <div className="image-info">
               <h2>{image.title}</h2>
               <p><strong>Photographer:</strong> {image.copyright ? image.copyright : "Unknown"}</p>
