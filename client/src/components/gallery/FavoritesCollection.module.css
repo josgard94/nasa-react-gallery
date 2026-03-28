@@ -1,0 +1,114 @@
+.section {
+  padding-bottom: 2.5rem;
+}
+
+.header {
+  padding: 1.25rem clamp(1rem, 4vw, 2.5rem) 0.5rem;
+  text-align: left;
+}
+
+.heading {
+  margin: 0 0 0.35rem;
+  font-size: 1.15rem;
+  font-weight: 800;
+  letter-spacing: -0.02em;
+  color: var(--fav-heading, #f8fafc);
+}
+
+:global(body:not(.dark-mode)) .heading {
+  --fav-heading: #0f172a;
+}
+
+.meta {
+  margin: 0;
+  font-size: 0.8125rem;
+  font-weight: 600;
+  color: var(--fav-meta, #94a3b8);
+  letter-spacing: 0.04em;
+}
+
+:global(body:not(.dark-mode)) .meta {
+  --fav-meta: #64748b;
+}
+
+.masonry {
+  column-count: 3;
+  column-gap: 1.25rem;
+  padding: 0.75rem clamp(1rem, 4vw, 2.5rem) 0;
+}
+
+@media (max-width: 900px) {
+  .masonry {
+    column-count: 2;
+  }
+}
+
+@media (max-width: 520px) {
+  .masonry {
+    column-count: 1;
+  }
+}
+
+.empty {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  min-height: min(50vh, 420px);
+  padding: 2rem clamp(1rem, 4vw, 2.5rem);
+}
+
+.emptyInner {
+  max-width: 28rem;
+  text-align: center;
+  padding: 2rem 1.5rem;
+  border-radius: 18px;
+  border: 1px solid var(--empty-border, rgba(56, 189, 248, 0.15));
+  background: var(--empty-bg, rgba(15, 23, 42, 0.45));
+  box-shadow: 0 12px 40px rgba(0, 0, 0, 0.2);
+}
+
+:global(body:not(.dark-mode)) .emptyInner {
+  --empty-border: rgba(15, 23, 42, 0.08);
+  --empty-bg: #f8fafc;
+  box-shadow: 0 8px 30px rgba(15, 23, 42, 0.06);
+}
+
+.emptyIcon {
+  display: block;
+  font-size: 2.5rem;
+  line-height: 1;
+  margin-bottom: 1rem;
+  opacity: 0.65;
+  color: #38bdf8;
+}
+
+.emptyTitle {
+  margin: 0 0 0.65rem;
+  font-size: 1.2rem;
+  font-weight: 800;
+  color: var(--empty-title, #f1f5f9);
+}
+
+:global(body:not(.dark-mode)) .emptyTitle {
+  --empty-title: #0f172a;
+}
+
+.emptyText {
+  margin: 0;
+  font-size: 0.95rem;
+  line-height: 1.6;
+  color: var(--empty-body, #cbd5e1);
+}
+
+:global(body:not(.dark-mode)) .emptyText {
+  --empty-body: #475569;
+}
+
+.emptyText strong {
+  font-weight: 700;
+  color: var(--empty-strong, #e2e8f0);
+}
+
+:global(body:not(.dark-mode)) .emptyText strong {
+  --empty-strong: #334155;
+}

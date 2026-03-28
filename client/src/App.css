@@ -286,6 +286,38 @@ body.dark-mode .app-tab--active:hover {
   background: rgba(56, 189, 248, 0.3);
 }
 
+.app-tab__badge {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-width: 1.25rem;
+  height: 1.25rem;
+  margin-left: 0.4rem;
+  padding: 0 0.35rem;
+  font-size: 0.65rem;
+  font-weight: 800;
+  font-variant-numeric: tabular-nums;
+  border-radius: 999px;
+  background: rgba(56, 189, 248, 0.35);
+  color: #f0f9ff;
+  vertical-align: middle;
+}
+
+body:not(.dark-mode) .app-tab__badge {
+  background: rgba(14, 165, 233, 0.2);
+  color: #0369a1;
+}
+
+.app-tab--active .app-tab__badge {
+  background: rgba(15, 23, 42, 0.12);
+  color: #0f172a;
+}
+
+body.dark-mode .app-tab--active .app-tab__badge {
+  background: rgba(240, 249, 255, 0.2);
+  color: #f0f9ff;
+}
+
 @media (max-width: 720px) {
   .App-header {
     flex-wrap: wrap;

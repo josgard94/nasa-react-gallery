@@ -3,23 +3,18 @@ import './App.css';
 import SpaceWeatherAlerts from './components/space-weather/SpaceWeatherAlerts';
 import GalleryGrid from './components/gallery/GalleryGrid';
 import ImageModal from './components/gallery/ImageModal';
-
-const FAVORITES_STORAGE_KEY = 'nasa-gallery-favorites';
+import FavoritesCollection from './components/gallery/FavoritesCollection';
+import {
+  loadFavorites,
+  saveFavorites,
+  favoritesToKeySet,
+  favoriteId,
+  snapshotFavorite,
+} from './components/gallery/favoritesStorage';
 
 function itemsFromApodPayload(data) {
   if (!data || typeof data !== 'object') return [];
   return Array.isArray(data) ? data : [data];
-}
-
-function readFavoriteKeys() {
-  try {
-    const raw = localStorage.getItem(FAVORITES_STORAGE_KEY);
-    if (!raw) return new Set();
-    const arr = JSON.parse(raw);
-    return new Set(Array.isArray(arr) ? arr : []);
-  } catch {
-    return new Set();
-  }
 }
 
 function App() {
@@ -35,11 +30,13 @@ function App() {
     return v === 'true';
   });
 
-  const [favoriteKeys, setFavoriteKeys] = useState(readFavoriteKeys);
+  const [favorites, setFavorites] = useState(loadFavorites);
 
   const [mainTab, setMainTab] = useState('gallery');
 
   const path = process.env.REACT_APP_ROOT_API;
+
+  const favoriteKeys = useMemo(() => favoritesToKeySet(favorites), [favorites]);
 
   const loadImages = useCallback(() => {
     setApiError(null);
@@ -109,25 +106,26 @@ function App() {
   }, []);
 
   const toggleFavorite = useCallback((image) => {
-    const key = image?.date || image?.url;
-    if (!key) return;
-    setFavoriteKeys((prev) => {
-      const next = new Set(prev);
-      if (next.has(key)) next.delete(key);
-      else next.add(key);
-      try {
-        localStorage.setItem(FAVORITES_STORAGE_KEY, JSON.stringify([...next]));
-      } catch {
-        /* ignore quota */
+    const id = favoriteId(image);
+    if (!id) return;
+    setFavorites((prev) => {
+      const exists = prev.some((x) => favoriteId(x) === id);
+      let next;
+      if (exists) {
+        next = prev.filter((x) => favoriteId(x) !== id);
+      } else {
+        const snap = snapshotFavorite(image);
+        if (!snap) return prev;
+        next = [...prev.filter((x) => favoriteId(x) !== id), snap];
       }
+      saveFavorites(next);
       return next;
     });
   }, []);
 
   const selectedFavorite = useMemo(() => {
     if (!selectedImage) return false;
-    const key = selectedImage.date || selectedImage.url;
-    return favoriteKeys.has(key);
+    return favoriteKeys.has(favoriteId(selectedImage));
   }, [selectedImage, favoriteKeys]);
 
   const toggleTheme = useCallback(() => {
@@ -153,6 +151,22 @@ function App() {
               onClick={() => setMainTab('gallery')}
             >
               Gallery
+            </button>
+            <button
+              type="button"
+              role="tab"
+              id="tab-favorites"
+              aria-selected={mainTab === 'favorites'}
+              aria-controls="panel-favorites"
+              className={`app-tab${mainTab === 'favorites' ? ' app-tab--active' : ''}`}
+              onClick={() => setMainTab('favorites')}
+            >
+              Favorites
+              {favorites.length > 0 && (
+                <span className="app-tab__badge" aria-hidden>
+                  {favorites.length}
+                </span>
+              )}
             </button>
             <button
               type="button"
@@ -215,6 +229,20 @@ function App() {
           loading={loading}
           onOpenModal={openModal}
           favoriteKeys={favoriteKeys}
+          onToggleFavorite={toggleFavorite}
+        />
+      </div>
+
+      <div
+        id="panel-favorites"
+        role="tabpanel"
+        aria-labelledby="tab-favorites"
+        hidden={mainTab !== 'favorites'}
+        className="app-tab-panel"
+      >
+        <FavoritesCollection
+          favorites={favorites}
+          onOpenModal={openModal}
           onToggleFavorite={toggleFavorite}
         />
       </div>
