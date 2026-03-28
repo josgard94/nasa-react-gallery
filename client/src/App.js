@@ -210,7 +210,7 @@ function App() {
             </a>
             . Add it to <code>REACT_APP_ROOT_API</code> inside <code>client/.env</code>, for example:{' '}
             <code className="api-error-example">
-              https://api.nasa.gov/planetary/apod?api_key=YOUR_KEY&count=6
+              https://api.nasa.gov/planetary/apod?api_key=YOUR_KEY&count=8
             </code>
             , then restart <code>npm start</code>.
           </p>

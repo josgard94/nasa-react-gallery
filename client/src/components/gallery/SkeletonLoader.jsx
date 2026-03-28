@@ -1,9 +1,10 @@
 import React, { memo } from 'react';
 import styles from './SkeletonLoader.module.css';
+import gridLayout from './galleryGridLayout.module.css';
 
-function SkeletonLoader({ count = 9 }) {
+function SkeletonLoader({ count = 8 }) {
   return (
-    <div className={styles.grid} aria-hidden="true">
+    <div className={gridLayout.grid} aria-hidden="true">
       {Array.from({ length: count }, (_, i) => (
         <div key={i} className={styles.card}>
           <div className={styles.shimmer} />

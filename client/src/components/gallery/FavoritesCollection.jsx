@@ -2,6 +2,7 @@ import React, { memo } from 'react';
 import ImageCard from './ImageCard';
 import { favoriteId } from './favoritesStorage';
 import styles from './FavoritesCollection.module.css';
+import gridLayout from './galleryGridLayout.module.css';
 
 function FavoritesCollection({ favorites, onOpenModal, onToggleFavorite }) {
   if (!favorites.length) {
@@ -32,7 +33,7 @@ function FavoritesCollection({ favorites, onOpenModal, onToggleFavorite }) {
           {favorites.length} {favorites.length === 1 ? 'image saved' : 'images saved'}
         </p>
       </header>
-      <div className={styles.masonry}>
+      <div className={gridLayout.grid}>
         {favorites.map((image, index) => (
           <ImageCard
             key={favoriteId(image) || index}

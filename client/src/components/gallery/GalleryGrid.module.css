@@ -35,72 +35,9 @@
   }
 }
 
-.masonry {
-  column-count: 3;
-  column-gap: 1.25rem;
-  padding: 1.25rem clamp(1rem, 4vw, 2.5rem) 1rem;
-}
-
-@media (max-width: 900px) {
-  .masonry {
-    column-count: 2;
-  }
-}
-
-@media (max-width: 520px) {
-  .masonry {
-    column-count: 1;
-  }
-}
-
-.footer {
-  display: flex;
-  justify-content: center;
-  padding: 0.5rem 1rem 2.5rem;
-}
-
-.loadMore {
-  display: inline-flex;
-  flex-direction: column;
-  align-items: center;
-  gap: 0.25rem;
-  padding: 0.65rem 1.5rem;
-  border-radius: 999px;
-  border: 1px solid var(--load-border, rgba(56, 189, 248, 0.35));
-  background: var(--load-bg, rgba(56, 189, 248, 0.1));
-  color: var(--load-fg, #e0f2fe);
-  font-size: 0.875rem;
-  font-weight: 700;
-  font-family: inherit;
-  letter-spacing: 0.04em;
-  cursor: pointer;
-  transition:
-    background 0.2s ease,
-    border-color 0.2s ease,
-    transform 0.15s ease;
-}
-
-.loadMore:hover {
-  background: rgba(56, 189, 248, 0.2);
-  border-color: rgba(56, 189, 248, 0.55);
-  transform: translateY(-1px);
-}
-
-.loadMore:focus-visible {
-  outline: 2px solid #38bdf8;
-  outline-offset: 3px;
-}
-
-:global(body:not(.dark-mode)) .loadMore {
-  --load-border: rgba(14, 165, 233, 0.35);
-  --load-bg: rgba(14, 165, 233, 0.08);
-  --load-fg: #0369a1;
-}
-
-.loadMoreMeta {
-  font-size: 0.7rem;
-  font-weight: 600;
-  letter-spacing: 0.06em;
-  opacity: 0.85;
-  text-transform: uppercase;
+/* Triggers infinite scroll when it enters the viewport (see GalleryGrid IntersectionObserver). */
+.sentinel {
+  height: 1px;
+  margin: 0 clamp(0.75rem, 3vw, 2rem) 2rem;
+  pointer-events: none;
 }

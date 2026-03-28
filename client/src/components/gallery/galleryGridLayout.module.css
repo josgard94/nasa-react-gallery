@@ -1,0 +1,33 @@
+/**
+ * Shared gallery grid: 4 columns on large viewports (~2 rows for 8 items),
+ * scaling down for smaller screens.
+ */
+.grid {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 0.7rem 0.8rem;
+  padding: 1rem clamp(0.75rem, 3vw, 2rem) 0.75rem;
+  width: 100%;
+  box-sizing: border-box;
+}
+
+@media (min-width: 480px) {
+  .grid {
+    grid-template-columns: repeat(2, 1fr);
+    gap: 0.75rem 0.85rem;
+  }
+}
+
+@media (min-width: 768px) {
+  .grid {
+    grid-template-columns: repeat(3, 1fr);
+    gap: 0.8rem 0.95rem;
+  }
+}
+
+@media (min-width: 1100px) {
+  .grid {
+    grid-template-columns: repeat(4, 1fr);
+    gap: 0.85rem 1rem;
+  }
+}

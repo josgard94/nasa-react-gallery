@@ -63,7 +63,7 @@ npm install
 3. Create a .env file and add your NASA API Key:
 
 ```bash
-REACT_APP_ROOT_API="https://api.nasa.gov/planetary/apod?api_key=YOUR_API_KEY_HERE&count=6"
+REACT_APP_ROOT_API="https://api.nasa.gov/planetary/apod?api_key=YOUR_API_KEY_HERE&count=8"
 ```
 4. Run the app:
 ```bash 
