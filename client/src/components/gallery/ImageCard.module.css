@@ -1,0 +1,221 @@
+.card {
+  break-inside: avoid;
+  margin-bottom: 1.25rem;
+  border-radius: 14px;
+  overflow: hidden;
+  background: var(--card-bg, rgba(15, 23, 42, 0.65));
+  border: 1px solid var(--card-border, rgba(56, 189, 248, 0.12));
+  box-shadow:
+    0 0 0 1px rgba(0, 0, 0, 0.2),
+    0 12px 40px rgba(0, 0, 0, 0.35);
+  cursor: pointer;
+  text-align: left;
+  transition:
+    transform 0.35s cubic-bezier(0.22, 1, 0.36, 1),
+    box-shadow 0.35s ease,
+    border-color 0.25s ease;
+  outline: none;
+}
+
+:global(body:not(.dark-mode)) .card {
+  --card-bg: #ffffff;
+  --card-border: rgba(15, 23, 42, 0.08);
+  box-shadow: 0 4px 24px rgba(15, 23, 42, 0.08);
+}
+
+.card:hover,
+.card:focus-visible {
+  transform: translateY(-4px) scale(1.01);
+  border-color: var(--card-border-hover, rgba(56, 189, 248, 0.45));
+  box-shadow:
+    0 0 0 1px rgba(56, 189, 248, 0.2),
+    0 20px 50px rgba(0, 0, 0, 0.45);
+}
+
+:global(body:not(.dark-mode)) .card:hover,
+:global(body:not(.dark-mode)) .card:focus-visible {
+  --card-border-hover: rgba(14, 165, 233, 0.35);
+  box-shadow: 0 12px 40px rgba(15, 23, 42, 0.12);
+}
+
+.card:focus-visible {
+  outline: 2px solid #38bdf8;
+  outline-offset: 3px;
+}
+
+.mediaWrap {
+  position: relative;
+  overflow: hidden;
+  aspect-ratio: 4 / 3;
+  background: #0b1120;
+}
+
+.imgSlot {
+  position: relative;
+  width: 100%;
+  height: 100%;
+}
+
+.image {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  display: block;
+  transform: scale(1.02);
+  transition:
+    transform 0.55s cubic-bezier(0.22, 1, 0.36, 1),
+    opacity 0.5s ease;
+  opacity: 0;
+}
+
+.imageVisible {
+  opacity: 1;
+}
+
+.card:hover .imageVisible,
+.card:focus-visible .imageVisible {
+  transform: scale(1.08);
+}
+
+.imgPlaceholder {
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(145deg, #1e293b 0%, #0f172a 100%);
+}
+
+.gradient {
+  position: absolute;
+  inset: 0;
+  z-index: 1;
+  pointer-events: none;
+  background: linear-gradient(
+    180deg,
+    transparent 35%,
+    rgba(2, 6, 23, 0.75) 100%
+  );
+  opacity: 0.85;
+  transition: opacity 0.35s ease;
+}
+
+.card:hover .gradient,
+.card:focus-visible .gradient {
+  opacity: 1;
+}
+
+.overlay {
+  position: absolute;
+  inset: 0;
+  z-index: 2;
+  display: flex;
+  align-items: flex-end;
+  justify-content: center;
+  padding: 1rem;
+  opacity: 0;
+  transition: opacity 0.3s ease;
+  pointer-events: none;
+}
+
+.card:hover .overlay,
+.card:focus-visible .overlay {
+  opacity: 1;
+}
+
+.viewHint {
+  font-size: 0.75rem;
+  font-weight: 700;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: rgba(255, 255, 255, 0.92);
+  text-shadow: 0 2px 12px rgba(0, 0, 0, 0.6);
+}
+
+.videoBadge {
+  position: absolute;
+  top: 0.65rem;
+  left: 0.65rem;
+  z-index: 3;
+  font-size: 0.65rem;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  padding: 0.3rem 0.55rem;
+  border-radius: 6px;
+  background: rgba(15, 23, 42, 0.85);
+  color: #e0f2fe;
+  border: 1px solid rgba(56, 189, 248, 0.35);
+}
+
+.favorite {
+  position: absolute;
+  top: 0.55rem;
+  right: 0.55rem;
+  z-index: 4;
+  width: 2.25rem;
+  height: 2.25rem;
+  border-radius: 10px;
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  background: rgba(2, 6, 23, 0.55);
+  color: rgba(255, 255, 255, 0.85);
+  font-size: 1.1rem;
+  line-height: 1;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition:
+    background 0.2s ease,
+    transform 0.2s ease,
+    border-color 0.2s ease;
+}
+
+.favorite:hover {
+  background: rgba(56, 189, 248, 0.25);
+  border-color: rgba(56, 189, 248, 0.5);
+  transform: scale(1.06);
+}
+
+.favorite:focus-visible {
+  outline: 2px solid #38bdf8;
+  outline-offset: 2px;
+}
+
+.favoriteActive {
+  color: #fbbf24;
+  border-color: rgba(251, 191, 36, 0.45);
+  background: rgba(120, 53, 15, 0.35);
+}
+
+.body {
+  padding: 1rem 1.1rem 1.15rem;
+}
+
+.title {
+  margin: 0 0 0.35rem;
+  font-size: 1rem;
+  font-weight: 700;
+  line-height: 1.35;
+  color: var(--card-title, #f1f5f9);
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+}
+
+:global(body:not(.dark-mode)) .title {
+  --card-title: #0f172a;
+}
+
+.date {
+  display: block;
+  font-size: 0.78rem;
+  font-weight: 600;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  color: var(--card-meta, #94a3b8);
+}
+
+:global(body:not(.dark-mode)) .date {
+  --card-meta: #64748b;
+}

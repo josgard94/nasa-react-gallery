@@ -1,11 +1,25 @@
-import React, { useState, useEffect, useCallback } from 'react';
+import React, { useState, useEffect, useCallback, useMemo } from 'react';
 import './App.css';
-import { HashLoader } from 'react-spinners';
 import SpaceWeatherAlerts from './components/space-weather/SpaceWeatherAlerts';
+import GalleryGrid from './components/gallery/GalleryGrid';
+import ImageModal from './components/gallery/ImageModal';
+
+const FAVORITES_STORAGE_KEY = 'nasa-gallery-favorites';
 
 function itemsFromApodPayload(data) {
   if (!data || typeof data !== 'object') return [];
   return Array.isArray(data) ? data : [data];
+}
+
+function readFavoriteKeys() {
+  try {
+    const raw = localStorage.getItem(FAVORITES_STORAGE_KEY);
+    if (!raw) return new Set();
+    const arr = JSON.parse(raw);
+    return new Set(Array.isArray(arr) ? arr : []);
+  } catch {
+    return new Set();
+  }
 }
 
 function App() {
@@ -16,8 +30,12 @@ function App() {
   const [apiError, setApiError] = useState(null);
 
   const [darkMode, setDarkMode] = useState(() => {
-    return localStorage.getItem("darkMode") === "true";
+    const v = localStorage.getItem('darkMode');
+    if (v === null) return true;
+    return v === 'true';
   });
+
+  const [favoriteKeys, setFavoriteKeys] = useState(readFavoriteKeys);
 
   const [mainTab, setMainTab] = useState('gallery');
 
@@ -76,46 +94,53 @@ function App() {
   }, [loadImages]);
 
   useEffect(() => {
-    document.body.classList.toggle("dark-mode", darkMode);
-    localStorage.setItem("darkMode", darkMode);
+    document.body.classList.toggle('dark-mode', darkMode);
+    localStorage.setItem('darkMode', darkMode);
   }, [darkMode]);
 
-  const openModal = (image) => {
+  const openModal = useCallback((image) => {
     setSelectedImage(image);
     setIsModalOpen(true);
-  };
+  }, []);
 
-  const closeModal = () => {
+  const closeModal = useCallback(() => {
     setIsModalOpen(false);
     setSelectedImage(null);
-  };
+  }, []);
 
-  if (loading) {
-    return (
-      <div style={{
-        width: '100vw',
-        height: '100vh',
-        display: 'flex',
-        justifyContent: 'center',
-        alignItems: 'center',
-        backgroundColor: '#000',
-        color: '#fff',
-        flexDirection: 'column',
-      }}>
-        <HashLoader size={60} color="#ffffff" />
-        <p style={{ marginTop: '1rem' }}>Loading cosmic images...</p>
-      </div>
-    );
-  }
+  const toggleFavorite = useCallback((image) => {
+    const key = image?.date || image?.url;
+    if (!key) return;
+    setFavoriteKeys((prev) => {
+      const next = new Set(prev);
+      if (next.has(key)) next.delete(key);
+      else next.add(key);
+      try {
+        localStorage.setItem(FAVORITES_STORAGE_KEY, JSON.stringify([...next]));
+      } catch {
+        /* ignore quota */
+      }
+      return next;
+    });
+  }, []);
 
-  const toggleTheme = () => {
-    setDarkMode(prev => !prev);
-  };
+  const selectedFavorite = useMemo(() => {
+    if (!selectedImage) return false;
+    const key = selectedImage.date || selectedImage.url;
+    return favoriteKeys.has(key);
+  }, [selectedImage, favoriteKeys]);
+
+  const toggleTheme = useCallback(() => {
+    setDarkMode((prev) => !prev);
+  }, []);
 
   return (
     <div className="App">
       <header className="App-header">
-        <h1 className="logo">🚀 Cosmic Gallery</h1>
+        <div className="App-header__brand">
+          <h1 className="logo">NASA Gallery</h1>
+          <p className="App-header__subtitle">Astronomy Picture of the Day</p>
+        </div>
         <div className="App-header__center">
           <nav className="app-tabs" role="tablist" aria-label="Main sections">
             <button
@@ -151,11 +176,11 @@ function App() {
               disabled={loading}
               aria-busy={loading}
             >
-              🔄 New images
+              Refresh
             </button>
           )}
           <button type="button" className="theme-toggle" onClick={toggleTheme}>
-            {darkMode ? "☀️ Light Mode" : "🌙 Dark Mode"}
+            {darkMode ? 'Light mode' : 'Dark mode'}
           </button>
         </div>
       </header>
@@ -185,22 +210,13 @@ function App() {
         hidden={mainTab !== 'gallery'}
         className="app-tab-panel"
       >
-        <div className="gallery">
-          {images.map((image, index) => (
-            <div key={image.date ?? index} className="image-card" onClick={() => openModal(image)}>
-              <img src={image.url} alt={image.title} className="image" loading="lazy" />
-              <div className="image-info">
-                <h2>{image.title}</h2>
-                <p>
-                  <strong>Photographer:</strong>{' '}
-                  {image.copyright ? image.copyright : 'Unknown'}
-                </p>
-                <p>{image.explanation}</p>
-                <p><strong>Date:</strong> {image.date}</p>
-              </div>
-            </div>
-          ))}
-        </div>
+        <GalleryGrid
+          images={images}
+          loading={loading}
+          onOpenModal={openModal}
+          favoriteKeys={favoriteKeys}
+          onToggleFavorite={toggleFavorite}
+        />
       </div>
 
       <div
@@ -214,19 +230,12 @@ function App() {
       </div>
 
       {isModalOpen && selectedImage && (
-        <div className="modal" onClick={closeModal}>
-          <div className="modal-content" onClick={e => e.stopPropagation()}>
-            <span className="close" onClick={closeModal}>&times;</span>
-            <h2>{selectedImage.title}</h2>
-            <img src={selectedImage.url} alt={selectedImage.title} className="modal-image" />
-            <p>
-              <strong>Photographer:</strong>{' '}
-              {selectedImage.copyright ? selectedImage.copyright : 'Unknown'}
-            </p>
-            <p>{selectedImage.explanation}</p>
-            <p><strong>Date:</strong> {selectedImage.date}</p>
-          </div>
-        </div>
+        <ImageModal
+          image={selectedImage}
+          isFavorite={selectedFavorite}
+          onClose={closeModal}
+          onToggleFavorite={toggleFavorite}
+        />
       )}
     </div>
   );

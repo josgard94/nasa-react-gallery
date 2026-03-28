@@ -1,0 +1,92 @@
+.grid {
+  column-count: 3;
+  column-gap: 1.25rem;
+  padding: 1.25rem clamp(1rem, 4vw, 2.5rem) 2.5rem;
+}
+
+@media (max-width: 900px) {
+  .grid {
+    column-count: 2;
+  }
+}
+
+@media (max-width: 520px) {
+  .grid {
+    column-count: 1;
+  }
+}
+
+.card {
+  break-inside: avoid;
+  margin-bottom: 1.25rem;
+  border-radius: 14px;
+  overflow: hidden;
+  background: var(--gallery-skeleton-surface, rgba(30, 41, 59, 0.55));
+  border: 1px solid var(--gallery-skeleton-border, rgba(148, 163, 184, 0.12));
+  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.25);
+}
+
+:global(body:not(.dark-mode)) .card {
+  --gallery-skeleton-surface: #f1f5f9;
+  --gallery-skeleton-border: rgba(15, 23, 42, 0.08);
+  box-shadow: 0 4px 20px rgba(15, 23, 42, 0.06);
+}
+
+.shimmer {
+  height: 200px;
+  background: linear-gradient(
+    110deg,
+    var(--gallery-shimmer-base, rgba(148, 163, 184, 0.12)) 0%,
+    var(--gallery-shimmer-highlight, rgba(226, 232, 240, 0.18)) 45%,
+    var(--gallery-shimmer-base, rgba(148, 163, 184, 0.12)) 90%
+  );
+  background-size: 200% 100%;
+  animation: shimmer 1.35s ease-in-out infinite;
+}
+
+:global(body:not(.dark-mode)) .shimmer {
+  --gallery-shimmer-base: rgba(15, 23, 42, 0.06);
+  --gallery-shimmer-highlight: rgba(15, 23, 42, 0.1);
+}
+
+@keyframes shimmer {
+  0% {
+    background-position: 100% 0;
+  }
+  100% {
+    background-position: -100% 0;
+  }
+}
+
+.body {
+  padding: 1rem 1.1rem 1.15rem;
+  text-align: left;
+}
+
+.line {
+  height: 10px;
+  border-radius: 6px;
+  margin-bottom: 0.55rem;
+  background: var(--gallery-line, rgba(148, 163, 184, 0.15));
+  animation: shimmer 1.35s ease-in-out infinite;
+  background-size: 200% 100%;
+}
+
+:global(body:not(.dark-mode)) .line {
+  --gallery-line: rgba(15, 23, 42, 0.08);
+}
+
+.lineTitle {
+  width: 78%;
+  height: 14px;
+  margin-bottom: 0.65rem;
+}
+
+.lineMeta {
+  width: 42%;
+}
+
+.lineShort {
+  width: 55%;
+  margin-bottom: 0;
+}
