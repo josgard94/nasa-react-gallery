@@ -1,12 +1,18 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useCallback } from 'react';
 import './App.css';
 import { HashLoader } from 'react-spinners';
+
+function itemsFromApodPayload(data) {
+  if (!data || typeof data !== 'object') return [];
+  return Array.isArray(data) ? data : [data];
+}
 
 function App() {
   const [images, setImages] = useState([]);
   const [selectedImage, setSelectedImage] = useState(null);
   const [isModalOpen, setIsModalOpen] = useState(false);
-  const [loading, setLoading] = useState(true); 
+  const [loading, setLoading] = useState(true);
+  const [apiError, setApiError] = useState(null);
 
   const [darkMode, setDarkMode] = useState(() => {
     return localStorage.getItem("darkMode") === "true";
@@ -14,17 +20,57 @@ function App() {
 
   const path = process.env.REACT_APP_ROOT_API;
 
-  useEffect(() => {
-    console.log('path', path);
-    fetch(`${path}`)
-      .then(response => response.json())
-      .then(data => {
-        setImages(data);
-        console.log('data', data);
+  const loadImages = useCallback(() => {
+    setApiError(null);
+    if (!path) {
+      setImages([]);
+      setApiError(
+        'Missing REACT_APP_ROOT_API. Add your NASA API URL to client/.env (see README), then restart the dev server.'
+      );
+      setLoading(false);
+      return;
+    }
+    setIsModalOpen(false);
+    setSelectedImage(null);
+    setLoading(true);
+    fetch(path, { cache: 'no-store' })
+      .then(async (response) => {
+        let data;
+        try {
+          data = await response.json();
+        } catch {
+          setImages([]);
+          setApiError('The server returned a response that is not valid JSON.');
+          return;
+        }
+        if (data?.error) {
+          const e = data.error;
+          console.error('NASA API error:', e);
+          setImages([]);
+          setApiError(
+            [e.code, e.message].filter(Boolean).join(': ') || 'NASA API rejected the request.'
+          );
+          return;
+        }
+        if (!response.ok) {
+          setImages([]);
+          setApiError(`Request failed (${response.status}).`);
+          return;
+        }
+        setImages(itemsFromApodPayload(data).filter((item) => item && item.url));
+        setApiError(null);
       })
-      .catch(error => console.error('Error fetching images from NASA API:', error))
-      .finally(() => setLoading(false)); 
-  }, []);
+      .catch((error) => {
+        console.error('Error fetching images from NASA API:', error);
+        setImages([]);
+        setApiError('Network error. Check your connection and try again.');
+      })
+      .finally(() => setLoading(false));
+  }, [path]);
+
+  useEffect(() => {
+    loadImages();
+  }, [loadImages]);
 
   useEffect(() => {
     document.body.classList.toggle("dark-mode", darkMode);
@@ -69,15 +115,43 @@ function App() {
     <div className="App">
       <header className="App-header">
         <h1 className="logo">🚀 Cosmic Gallery</h1>
-        <button className="theme-toggle" onClick={toggleTheme}>
-          {darkMode ? "☀️ Light Mode" : "🌙 Dark Mode"}
-        </button>
+        <div className="header-actions">
+          <button
+            type="button"
+            className="refresh-gallery"
+            onClick={loadImages}
+            disabled={loading}
+            aria-busy={loading}
+          >
+            🔄 New images
+          </button>
+          <button type="button" className="theme-toggle" onClick={toggleTheme}>
+            {darkMode ? "☀️ Light Mode" : "🌙 Dark Mode"}
+          </button>
+        </div>
       </header>
 
-      
+      {apiError && (
+        <div className="api-error-banner" role="alert">
+          <p className="api-error-title">Could not load images</p>
+          <p className="api-error-detail">{apiError}</p>
+          <p className="api-error-hint">
+            Get a free key at{' '}
+            <a href="https://api.nasa.gov/" target="_blank" rel="noopener noreferrer">
+              api.nasa.gov
+            </a>
+            . Put it in <code>REACT_APP_ROOT_API</code> inside <code>client/.env</code>, for example:{' '}
+            <code className="api-error-example">
+              https://api.nasa.gov/planetary/apod?api_key=YOUR_KEY&amp;count=6
+            </code>
+            , then restart <code>npm start</code>.
+          </p>
+        </div>
+      )}
+
       <div className="gallery">
         {images.map((image, index) => (
-          <div key={index} className="image-card" onClick={() => openModal(image)}>
+          <div key={image.date ?? index} className="image-card" onClick={() => openModal(image)}>
             <img src={image.url} alt={image.title} className="image" loading="lazy" />
             <div className="image-info">
               <h2>{image.title}</h2>
