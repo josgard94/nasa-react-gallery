@@ -1,6 +1,7 @@
 import React, { useState, useEffect, useCallback } from 'react';
 import './App.css';
 import { HashLoader } from 'react-spinners';
+import SpaceWeatherAlerts from './components/space-weather/SpaceWeatherAlerts';
 
 function itemsFromApodPayload(data) {
   if (!data || typeof data !== 'object') return [];
@@ -17,6 +18,8 @@ function App() {
   const [darkMode, setDarkMode] = useState(() => {
     return localStorage.getItem("darkMode") === "true";
   });
+
+  const [mainTab, setMainTab] = useState('gallery');
 
   const path = process.env.REACT_APP_ROOT_API;
 
@@ -87,7 +90,6 @@ function App() {
     setSelectedImage(null);
   };
 
-
   if (loading) {
     return (
       <div style={{
@@ -110,21 +112,48 @@ function App() {
     setDarkMode(prev => !prev);
   };
 
-
   return (
     <div className="App">
       <header className="App-header">
         <h1 className="logo">🚀 Cosmic Gallery</h1>
+        <div className="App-header__center">
+          <nav className="app-tabs" role="tablist" aria-label="Main sections">
+            <button
+              type="button"
+              role="tab"
+              id="tab-gallery"
+              aria-selected={mainTab === 'gallery'}
+              aria-controls="panel-gallery"
+              className={`app-tab${mainTab === 'gallery' ? ' app-tab--active' : ''}`}
+              onClick={() => setMainTab('gallery')}
+            >
+              Gallery
+            </button>
+            <button
+              type="button"
+              role="tab"
+              id="tab-alerts"
+              aria-selected={mainTab === 'alerts'}
+              aria-controls="panel-alerts"
+              className={`app-tab${mainTab === 'alerts' ? ' app-tab--active' : ''}`}
+              onClick={() => setMainTab('alerts')}
+            >
+              Space weather
+            </button>
+          </nav>
+        </div>
         <div className="header-actions">
-          <button
-            type="button"
-            className="refresh-gallery"
-            onClick={loadImages}
-            disabled={loading}
-            aria-busy={loading}
-          >
-            🔄 New images
-          </button>
+          {mainTab === 'gallery' && (
+            <button
+              type="button"
+              className="refresh-gallery"
+              onClick={loadImages}
+              disabled={loading}
+              aria-busy={loading}
+            >
+              🔄 New images
+            </button>
+          )}
           <button type="button" className="theme-toggle" onClick={toggleTheme}>
             {darkMode ? "☀️ Light Mode" : "🌙 Dark Mode"}
           </button>
@@ -136,40 +165,64 @@ function App() {
           <p className="api-error-title">Could not load images</p>
           <p className="api-error-detail">{apiError}</p>
           <p className="api-error-hint">
-            Get a free key at{' '}
+            Get a free API key at{' '}
             <a href="https://api.nasa.gov/" target="_blank" rel="noopener noreferrer">
               api.nasa.gov
             </a>
-            . Put it in <code>REACT_APP_ROOT_API</code> inside <code>client/.env</code>, for example:{' '}
+            . Add it to <code>REACT_APP_ROOT_API</code> inside <code>client/.env</code>, for example:{' '}
             <code className="api-error-example">
-              https://api.nasa.gov/planetary/apod?api_key=YOUR_KEY&amp;count=6
+              https://api.nasa.gov/planetary/apod?api_key=YOUR_KEY&count=6
             </code>
             , then restart <code>npm start</code>.
           </p>
         </div>
       )}
 
-      <div className="gallery">
-        {images.map((image, index) => (
-          <div key={image.date ?? index} className="image-card" onClick={() => openModal(image)}>
-            <img src={image.url} alt={image.title} className="image" loading="lazy" />
-            <div className="image-info">
-              <h2>{image.title}</h2>
-              <p><strong>Photographer:</strong> {image.copyright ? image.copyright : "Unknown"}</p>
-              <p>{image.explanation}</p>
-              <p><strong>Date:</strong> {image.date}</p>
+      <div
+        id="panel-gallery"
+        role="tabpanel"
+        aria-labelledby="tab-gallery"
+        hidden={mainTab !== 'gallery'}
+        className="app-tab-panel"
+      >
+        <div className="gallery">
+          {images.map((image, index) => (
+            <div key={image.date ?? index} className="image-card" onClick={() => openModal(image)}>
+              <img src={image.url} alt={image.title} className="image" loading="lazy" />
+              <div className="image-info">
+                <h2>{image.title}</h2>
+                <p>
+                  <strong>Photographer:</strong>{' '}
+                  {image.copyright ? image.copyright : 'Unknown'}
+                </p>
+                <p>{image.explanation}</p>
+                <p><strong>Date:</strong> {image.date}</p>
+              </div>
             </div>
-          </div>
-        ))}
+          ))}
+        </div>
       </div>
 
-      {isModalOpen && (
+      <div
+        id="panel-alerts"
+        role="tabpanel"
+        aria-labelledby="tab-alerts"
+        hidden={mainTab !== 'alerts'}
+        className="app-tab-panel"
+      >
+        <SpaceWeatherAlerts />
+      </div>
+
+      {isModalOpen && selectedImage && (
         <div className="modal" onClick={closeModal}>
           <div className="modal-content" onClick={e => e.stopPropagation()}>
             <span className="close" onClick={closeModal}>&times;</span>
             <h2>{selectedImage.title}</h2>
             <img src={selectedImage.url} alt={selectedImage.title} className="modal-image" />
-            <p><strong>Photographer:</strong> {selectedImage.copyright ? selectedImage.copyright : "Unknown"}</p>
+            <p>
+              <strong>Photographer:</strong>{' '}
+              {selectedImage.copyright ? selectedImage.copyright : 'Unknown'}
+            </p>
             <p>{selectedImage.explanation}</p>
             <p><strong>Date:</strong> {selectedImage.date}</p>
           </div>

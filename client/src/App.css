@@ -17,53 +17,112 @@
   display: flex;
   align-items: center;
   justify-content: space-between;
+  gap: 1rem;
   padding: 1rem 2rem;
   background-color: var(--header-bg, #f0f0f0);
   box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
   transition: background-color 0.3s ease;
 }
 
+.App-header__center {
+  flex: 1 1 auto;
+  display: flex;
+  justify-content: center;
+  min-width: 0;
+}
+
 /* Dark mode override */
 body.dark-mode .App-header {
-  background-color: #1f1f1f;
+  background: linear-gradient(180deg, #18181b 0%, #1f1f1f 100%);
+  color: #fafafa;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.06);
+  box-shadow: 0 1px 0 rgba(0, 0, 0, 0.35);
 }
 
 .logo {
   font-size: 1.8rem;
   font-weight: bold;
   margin: 0;
+  flex-shrink: 0;
+}
+
+body.dark-mode .logo {
+  color: #fafafa;
 }
 
 .header-actions {
   display: flex;
   align-items: center;
+  flex-wrap: wrap;
+  justify-content: flex-end;
   gap: 0.75rem;
+  flex-shrink: 0;
 }
 
 .refresh-gallery,
 .theme-toggle {
-  background-color: transparent;
-  border: 2px solid currentColor;
-  border-radius: 20px;
-  padding: 0.5rem 1rem;
-  font-size: 0.95rem;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.35rem;
+  font-family: inherit;
+  font-size: 0.875rem;
+  font-weight: 600;
+  letter-spacing: 0.02em;
+  line-height: 1.2;
+  padding: 0.5rem 1.15rem;
+  border-radius: 999px;
   cursor: pointer;
-  transition: all 0.3s ease;
+  border: 1px solid #cbd5e1;
+  background: #ffffff;
+  color: #1e293b;
+  box-shadow: 0 1px 2px rgba(15, 23, 42, 0.05);
+  transition:
+    background-color 0.2s ease,
+    border-color 0.2s ease,
+    color 0.2s ease,
+    box-shadow 0.2s ease,
+    transform 0.15s ease;
 }
 
 .refresh-gallery:hover:not(:disabled),
 .theme-toggle:hover {
-  background-color: rgba(0, 0, 0, 0.05);
+  background: #f8fafc;
+  border-color: #94a3b8;
+  box-shadow: 0 2px 8px rgba(15, 23, 42, 0.08);
+}
+
+.refresh-gallery:active:not(:disabled),
+.theme-toggle:active {
+  transform: scale(0.98);
+}
+
+.refresh-gallery:focus-visible,
+.theme-toggle:focus-visible {
+  outline: 2px solid #0ea5e9;
+  outline-offset: 2px;
+}
+
+body.dark-mode .refresh-gallery,
+body.dark-mode .theme-toggle {
+  background: rgba(255, 255, 255, 0.06);
+  border: 1px solid rgba(255, 255, 255, 0.38);
+  color: #ffffff;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.25);
 }
 
 body.dark-mode .refresh-gallery:hover:not(:disabled),
 body.dark-mode .theme-toggle:hover {
-  background-color: rgba(255, 255, 255, 0.1);
+  background: rgba(255, 255, 255, 0.14);
+  border-color: rgba(255, 255, 255, 0.55);
+  color: #ffffff;
+  box-shadow: 0 2px 12px rgba(0, 0, 0, 0.35);
 }
 
 .refresh-gallery:disabled {
-  opacity: 0.6;
+  opacity: 0.5;
   cursor: not-allowed;
+  transform: none;
 }
 
 .api-error-banner {
@@ -125,9 +184,113 @@ body.dark-mode .api-error-banner code {
   word-break: break-all;
 }
 
+/* Header tabs (Gallery / Space weather) */
+.app-tabs {
+  display: inline-flex;
+  align-items: stretch;
+  gap: 4px;
+  margin: 0;
+  padding: 4px;
+  border: 1px solid #e2e8f0;
+  border-radius: 999px;
+  box-sizing: border-box;
+  background: #f1f5f9;
+  box-shadow: inset 0 1px 2px rgba(15, 23, 42, 0.04);
+}
+
+body.dark-mode .app-tabs {
+  border: 1px solid rgba(255, 255, 255, 0.22);
+  background: rgba(0, 0, 0, 0.25);
+  box-shadow:
+    inset 0 1px 2px rgba(0, 0, 0, 0.2),
+    0 1px 0 rgba(255, 255, 255, 0.04);
+}
+
+.app-tab {
+  margin: 0;
+  padding: 0.5rem 1.1rem;
+  font-size: 0.875rem;
+  font-weight: 600;
+  font-family: inherit;
+  letter-spacing: 0.02em;
+  color: #475569;
+  background: transparent;
+  border: none;
+  border-radius: 999px;
+  cursor: pointer;
+  white-space: nowrap;
+  transition:
+    background-color 0.2s ease,
+    color 0.2s ease,
+    box-shadow 0.2s ease;
+}
+
+.app-tab:hover {
+  color: #0f172a;
+  background: rgba(255, 255, 255, 0.65);
+}
+
+body.dark-mode .app-tab {
+  color: rgba(255, 255, 255, 0.78);
+}
+
+body.dark-mode .app-tab:hover {
+  color: #ffffff;
+  background: rgba(255, 255, 255, 0.1);
+}
+
+.app-tab:focus-visible {
+  outline: 2px solid #0ea5e9;
+  outline-offset: 2px;
+}
+
+.app-tab--active {
+  color: #0f172a;
+  background: #ffffff;
+  box-shadow: 0 1px 3px rgba(15, 23, 42, 0.1);
+}
+
+body.dark-mode .app-tab--active {
+  color: #ffffff;
+  background: rgba(56, 189, 248, 0.22);
+  box-shadow:
+    0 0 0 1px rgba(56, 189, 248, 0.35),
+    0 2px 10px rgba(0, 0, 0, 0.25);
+}
+
+body.dark-mode .app-tab--active:hover {
+  color: #ffffff;
+  background: rgba(56, 189, 248, 0.3);
+}
+
+@media (max-width: 720px) {
+  .App-header {
+    flex-wrap: wrap;
+  }
+
+  .App-header__center {
+    order: 3;
+    flex: 1 0 100%;
+    justify-content: center;
+  }
+
+  .app-tab {
+    padding: 0.4rem 0.75rem;
+    font-size: 0.85rem;
+  }
+}
+
+.app-tab-panel {
+  min-height: 2rem;
+}
+
+.app-tab-panel[hidden] {
+  display: none !important;
+}
+
 .gallery {
   display: grid;
-  grid-template-columns: repeat(3, 1fr); /* 3 imágenes por fila */
+  grid-template-columns: repeat(3, 1fr); /* three images per row */
   gap: 20px;
   padding: 20px;
 }
@@ -180,8 +343,8 @@ body.dark-mode .api-error-banner code {
   text-align: center;
   max-width: 600px;
   width: 90%;
-  height: 85vh; /* Establece la altura del modal al 80% de la altura de la ventana */
-  overflow-y: auto; /* Permite el scroll vertical si el contenido excede la altura del modal */
+  height: 85vh;
+  overflow-y: auto;
 }
 
 body.dark-mode .modal-content {
@@ -192,8 +355,8 @@ body.dark-mode .modal-content {
 
 .modal-image {
   width: 100%;
-  height: auto; /* Mantiene la proporción de la imagen */
-  max-height: 70vh; /* Limita la altura de la imagen al 70% de la altura de la ventana */
+  height: auto;
+  max-height: 70vh;
   border-radius: 10px;
 }
 
@@ -205,7 +368,7 @@ body.dark-mode .modal-content {
   font-size: 25px;
 }
 
-/* Tema claro por defecto */
+/* Default light theme */
 body {
   background-color: #ffffff;
   color: #000000;
@@ -221,7 +384,7 @@ body.dark-mode {
   scrollbar-color: #888 #2c2c2c; /* scroll-thumb, scroll-track */
 }
 
-/* Otros estilos que quieras cambiar en dark mode */
+/* Image cards in dark mode */
 .image-card {
   background-color: #f4f4f4;
 }
