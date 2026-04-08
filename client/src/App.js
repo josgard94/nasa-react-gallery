@@ -1,4 +1,13 @@
 import React, { useState, useEffect, useCallback, useMemo } from 'react';
+import {
+  BrowserRouter,
+  Routes,
+  Route,
+  Navigate,
+  useLocation,
+  useNavigate,
+  NavLink,
+} from 'react-router-dom';
 import './App.css';
 import SpaceWeatherAlerts from './components/space-weather/SpaceWeatherAlerts';
 import GalleryGrid from './components/gallery/GalleryGrid';
@@ -12,12 +21,23 @@ import {
   snapshotFavorite,
 } from './components/gallery/favoritesStorage';
 
+const GA_MEASUREMENT_ID = 'G-SC0QFEQTEW';
+
+const PATH_TO_TAB = {
+  '/gallery': 'gallery',
+  '/favorites': 'favorites',
+  '/space-weather': 'alerts',
+};
+
 function itemsFromApodPayload(data) {
   if (!data || typeof data !== 'object') return [];
   return Array.isArray(data) ? data : [data];
 }
 
-function App() {
+function NasaGalleryApp() {
+  const location = useLocation();
+  const navigate = useNavigate();
+
   const [images, setImages] = useState([]);
   const [selectedImage, setSelectedImage] = useState(null);
   const [isModalOpen, setIsModalOpen] = useState(false);
@@ -32,11 +52,24 @@ function App() {
 
   const [favorites, setFavorites] = useState(loadFavorites);
 
-  const [mainTab, setMainTab] = useState('gallery');
+  const mainTab = PATH_TO_TAB[location.pathname] ?? 'gallery';
 
   const path = process.env.REACT_APP_ROOT_API;
 
   const favoriteKeys = useMemo(() => favoritesToKeySet(favorites), [favorites]);
+
+  useEffect(() => {
+    if (!PATH_TO_TAB[location.pathname]) {
+      navigate('/gallery', { replace: true });
+    }
+  }, [location.pathname, navigate]);
+
+  useEffect(() => {
+    if (!PATH_TO_TAB[location.pathname] || typeof window.gtag !== 'function') return;
+    const base = process.env.PUBLIC_URL || '';
+    const pagePath = `${base}${location.pathname}`.replace(/\/{2,}/g, '/');
+    window.gtag('config', GA_MEASUREMENT_ID, { page_path: pagePath });
+  }, [location.pathname]);
 
   const loadImages = useCallback(() => {
     setApiError(null);
@@ -141,25 +174,27 @@ function App() {
         </div>
         <div className="App-header__center">
           <nav className="app-tabs" role="tablist" aria-label="Main sections">
-            <button
-              type="button"
+            <NavLink
+              to="/gallery"
               role="tab"
               id="tab-gallery"
-              aria-selected={mainTab === 'gallery'}
+              aria-selected={location.pathname === '/gallery'}
               aria-controls="panel-gallery"
-              className={`app-tab${mainTab === 'gallery' ? ' app-tab--active' : ''}`}
-              onClick={() => setMainTab('gallery')}
+              className={({ isActive }) =>
+                `app-tab${isActive ? ' app-tab--active' : ''}`
+              }
             >
               Gallery
-            </button>
-            <button
-              type="button"
+            </NavLink>
+            <NavLink
+              to="/favorites"
               role="tab"
               id="tab-favorites"
-              aria-selected={mainTab === 'favorites'}
+              aria-selected={location.pathname === '/favorites'}
               aria-controls="panel-favorites"
-              className={`app-tab${mainTab === 'favorites' ? ' app-tab--active' : ''}`}
-              onClick={() => setMainTab('favorites')}
+              className={({ isActive }) =>
+                `app-tab${isActive ? ' app-tab--active' : ''}`
+              }
             >
               Favorites
               {favorites.length > 0 && (
@@ -167,18 +202,19 @@ function App() {
                   {favorites.length}
                 </span>
               )}
-            </button>
-            <button
-              type="button"
+            </NavLink>
+            <NavLink
+              to="/space-weather"
               role="tab"
               id="tab-alerts"
-              aria-selected={mainTab === 'alerts'}
+              aria-selected={location.pathname === '/space-weather'}
               aria-controls="panel-alerts"
-              className={`app-tab${mainTab === 'alerts' ? ' app-tab--active' : ''}`}
-              onClick={() => setMainTab('alerts')}
+              className={({ isActive }) =>
+                `app-tab${isActive ? ' app-tab--active' : ''}`
+              }
             >
               Space weather
-            </button>
+            </NavLink>
           </nav>
         </div>
         <div className="header-actions">
@@ -266,6 +302,17 @@ function App() {
         />
       )}
     </div>
+  );
+}
+
+function App() {
+  return (
+    <BrowserRouter basename={process.env.PUBLIC_URL ?? ''}>
+      <Routes>
+        <Route path="/" element={<Navigate to="/gallery" replace />} />
+        <Route path="*" element={<NasaGalleryApp />} />
+      </Routes>
+    </BrowserRouter>
   );
 }
 

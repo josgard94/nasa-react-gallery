@@ -248,6 +248,13 @@ body.dark-mode .app-tabs {
     box-shadow 0.2s ease;
 }
 
+a.app-tab {
+  text-decoration: none;
+  display: inline-flex;
+  align-items: center;
+  box-sizing: border-box;
+}
+
 .app-tab:hover {
   color: #0f172a;
   background: rgba(255, 255, 255, 0.65);
